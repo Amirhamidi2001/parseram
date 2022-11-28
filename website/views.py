@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.views.generic.base import TemplateView
 
-# Create your views here.
+
+class CatView(TemplateView):
+    template_name = 'website/cat.html'
+
+
+class ProductView(TemplateView):
+    template_name = 'website/product.html'
