@@ -4,7 +4,8 @@ from ..models import Category, Product
 from .serializers import CatSerializer, ProductSerializer
 from .paginations import DefaultPagination
 
-class  CatViewSet(viewsets.ModelViewSet):
+
+class CatViewSet(viewsets.ModelViewSet):
     """
     A simple ViewSet for listing or retrieving category.
     """
@@ -13,7 +14,7 @@ class  CatViewSet(viewsets.ModelViewSet):
     pagination_class = DefaultPagination
 
 
-class  ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet):
     """
     A simple ViewSet for listing or retrieving Product.
     """

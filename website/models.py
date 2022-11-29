@@ -12,8 +12,8 @@ class Category(models.Model):
         related_name='child'
     )
 
-    def __str__(self):                           
-        full_path = [self.title]            
+    def __str__(self):
+        full_path = [self.title]
         k = self.parent
         while k is not None:
             full_path.append(k.title)
@@ -24,7 +24,10 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='website/',default='website/default.jpg')
+    image = models.ImageField(upload_to='website/', default='website/default.jpg')
     content = models.CharField(max_length=255)
-    category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True)
+
+    def __str__(self):
+        return self.name
