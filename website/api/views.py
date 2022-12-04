@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from ..models import Category, Product
-from .serializers import CatSerializer, ProductSerializer
+from ..models import *
+from .serializers import *
 from .paginations import DefaultPagination
 
 
@@ -20,4 +20,31 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    pagination_class = DefaultPagination
+
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for listing or retrieving Customer.
+    """
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+    pagination_class = DefaultPagination
+
+
+class OrderDetailViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for listing or retrieving OrderDetai.
+    """
+    serializer_class = OrderDetailSerializer
+    queryset = OrderDetail.objects.all()
+    pagination_class = DefaultPagination
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for listing or retrieving OrderDetai.
+    """
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
     pagination_class = DefaultPagination
