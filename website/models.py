@@ -65,6 +65,7 @@ class OrderDetail(models.Model):
     user = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    date = models.DateField(null=True)
 
     def __str__(self):
         return f"{self.quantity} of {self.product.title}"

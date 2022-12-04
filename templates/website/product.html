@@ -20,7 +20,7 @@
             function (data, textStatus, jqXHR) { 
                 wrapper = $('#post-wrapper');
                 for (post of data.results){
-                    wrapper.append(`<li><h2>${post.name}</h2>${post.image}<h3>${post.category}</h3><h4>${post.content}</h4><h5>${post.description}</h5></li>`)
+                    wrapper.append(`<li><h2>${post.title}</h2>${post.image}<h3>${post.category}</h3><h4>${post.content}</h4><h5>${post.description}</h5></li>`)
                 }
                 
                 // alert('status: ' + textStatus + ', data:' + data);
