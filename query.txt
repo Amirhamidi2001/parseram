@@ -1,0 +1,3 @@
+from .models import Customer
+customers = Customer.objects.filter(city="Tehran", gender="Male").filter(orderdetail__product__id=11, orderdetail__date__gte="2022-12-1", orderdetail__date__lte="2022-12-16")
+coustomer.count()

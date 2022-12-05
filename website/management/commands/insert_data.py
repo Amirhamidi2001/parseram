@@ -51,5 +51,5 @@ class Command(BaseCommand):
                     user = customer,
                     product = self.fake.random_element(Product.objects.all()),
                     quantity = self.fake.random_int(1, 3),
-                    date = self.fake.date_this_month(),
+                    date = self.fake.date_this_year(),
                 )
