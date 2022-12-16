@@ -34,7 +34,7 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(null=True)
     content = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True)
     price = models.FloatField(null=True)
 
@@ -77,10 +77,9 @@ class OrderDetail(models.Model):
     """
     This class is for ordering
     """
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey("Order", on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    date = models.DateField(null=True)
 
     def __str__(self):
         return f"{self.quantity} of {self.product.title}"
@@ -93,8 +92,8 @@ class Order(models.Model):
     """
     This class is for finalizing the order
     """
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    items = models.ManyToManyField(OrderDetail)
+    user = models.ForeignKey("Customer", on_delete=models.CASCADE)
+    items = models.ManyToManyField("OrderDetail")
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
