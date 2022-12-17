@@ -30,7 +30,6 @@ class Command(BaseCommand):
                 title=self.fake.word(),
                 content=self.fake.text(100),
                 description=self.fake.text(),
-                price=self.fake.pyint(),
                 category=self.fake.random_element(Category.objects.filter(parent=True)),
             )
 
@@ -45,9 +44,21 @@ class Command(BaseCommand):
             )
 
             for _ in range(500):
-                OrderDetail.objects.create(
+                order = Order.objects.create(
                     user=customer,
-                    product=self.fake.random_element(Product.objects.all()),
-                    quantity=self.fake.random_int(1, 3),
                     date=self.fake.date_this_year(),
                 )
+
+                totalprice = 0
+
+                for _ in range(self.fake.random_int(1, 3)):
+                    orderdetail = OrderDetail.objects.create(
+                        o = order,
+                        product=self.fake.random_element(Product.objects.all()),
+                        quantity=self.fake.random_int(1, 3),
+                        price=self.fake.pyint(),
+                    )
+                    totalprice += orderdetail.quantity * orderdetail.price
+                
+                order.totalprice = totalprice
+                order.save()

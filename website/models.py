@@ -13,18 +13,12 @@ class Category(models.Model):
         default=None,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='child'
     )
 
     def __str__(self):
-        full_path = [self.title]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.title)
-            k = k.parent
-
-        return ' -> '.join(full_path[::-1])
+        return self.title
 
 
 class Product(models.Model):
@@ -34,9 +28,8 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(null=True)
     content = models.CharField(max_length=255)
-    category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE, null=True)
     description = models.TextField(null=True)
-    price = models.FloatField(null=True)
 
     def __str__(self):
         return self.title
@@ -77,15 +70,13 @@ class OrderDetail(models.Model):
     """
     This class is for ordering
     """
-    order = models.ForeignKey("Order", on_delete=models.SET_NULL, null=True)
+    o = models.ForeignKey("Order", on_delete=models.CASCADE, null=True)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    price = models.IntegerField(null=True)
 
     def __str__(self):
         return f"{self.quantity} of {self.product.title}"
-
-    def get_total_item_price(self):
-        return self.quantity * self.product.price
 
 
 class Order(models.Model):
@@ -93,14 +84,8 @@ class Order(models.Model):
     This class is for finalizing the order
     """
     user = models.ForeignKey("Customer", on_delete=models.CASCADE)
-    items = models.ManyToManyField("OrderDetail")
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(null=True)
+    totalprice = models.IntegerField(null=True)
 
     def __str__(self):
         return self.user.name
-
-    def get_total(self):
-        total = 0
-        for order_item in self.items.all():
-            total += order_item.get_total_item_price()
-        return total
