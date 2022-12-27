@@ -1,3 +1,11 @@
 from website.models import Customer
 customers = Customer.objects.filter(city="", gender="").filter(orderdetail__product__id=, orderdetail__date__gte="", orderdetail__date__lte="")
 coustomer.count()
+
+query = Order.objects.filter(date__gte="2022-11-1", date__lte="2022-11-30" , user__city="Shiraz", user__gender="Male").filter(orderdetail__product__id=1)
+
+SELECT SUM(website_order.totalprice) FROM website_order INNER JOIN website_customer INNER JOIN website_orderdetail ON website_order.id=website_orderdetail.o_id AND website_order.user_id=website_customer.id WHERE website_customer.city="Shiraz" AND website_customer.gender="Male" AND website_order.date BETWEEN "2022-11-1" AND "2022-11-30" AND website_orderdetail.product_id=1;
+
+
+
+SELECT website_customer.name , website_product.title , SUM(website_orderdetail.quantity), AVG(website_orderdetail.price) FROM website_orderdetail INNER JOIN website_order INNER JOIN website_customer INNER JOIN website_product ON website_order.id = website_orderdetail.o_id AND website_order.user_id = website_customer.id AND website_orderdetail.product_id = website_product.id GROUP BY website_order.user_id , website_orderdetail.product_id
