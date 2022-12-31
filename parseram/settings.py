@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import pymysql
-pymysql.install_as_MySQLdb()
+# import pymysql
+# pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,24 +81,25 @@ WSGI_APPLICATION = "parseram.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb',
-        'USER': 'root',
-        'PASSWORD': 'Arsalanh_2001',
-        'HOST':'localhost',
-        'PORT':'3306',
-    }
-}
-
-
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'mydb',
+#         'USER': 'root',
+#         'PASSWORD': 'Arsalanh_2001',
+#         'HOST':'localhost',
+#         'PORT':'3306',
 #     }
 # }
+
+# https://www.djongomapper.com/using-django-with-mongodb-data-fields/
+
+DATABASES = {
+    "default": {
+        "ENGINE": "djongo",
+        "NAME": "mydb",
+    }
+}
 
 
 # Password validation
