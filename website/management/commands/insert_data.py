@@ -25,13 +25,13 @@ class Command(BaseCommand):
         self.fake = Faker()
 
     def handle(self, *args, **options):
-        # for _ in range(50):
-        #     Product.objects.create(
-        #         title=self.fake.word(),
-        #         content=self.fake.text(100),
-        #         description=self.fake.text(),
-        #         category=self.fake.random_element(Category.objects.filter(parent=True)),
-        #     )
+        for _ in range(50):
+            Product.objects.create(
+                title=self.fake.word(),
+                content=self.fake.text(100),
+                description=self.fake.text(),
+                category=self.fake.random_element(Category.objects.filter(parent=True)),
+            )
 
         for _ in range(10000):
             customer = Customer.objects.create(
@@ -49,6 +49,7 @@ class Command(BaseCommand):
                     date=self.fake.date_this_year(),
                 )
 
+                totalprice = 0
 
                 for _ in range(self.fake.random_int(1, 3)):
                     orderdetail = OrderDetail.objects.create(
@@ -57,6 +58,7 @@ class Command(BaseCommand):
                         quantity=self.fake.random_int(1, 3),
                         price=self.fake.pyint(),
                     )
+                    totalprice += orderdetail.quantity * orderdetail.price
                 
+                order.totalprice = totalprice
                 order.save()
-            # print(customer.name)
