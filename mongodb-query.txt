@@ -10,7 +10,7 @@ db.getCollection("website_order").aggregate(
         }, 
         {
             "$lookup" : {
-                "localField" : "website_order.id",
+                "localField" : "website_order.user_id",
                 "from" : "website_customer",
                 "foreignField" : "id",
                 "as" : "website_customer"
@@ -24,7 +24,7 @@ db.getCollection("website_order").aggregate(
         }, 
         {
             "$lookup" : {
-                "localField" : "website_order.user_id",
+                "localField" : "website_order.id",
                 "from" : "website_orderdetail",
                 "foreignField" : "o_id",
                 "as" : "website_orderdetail"
