@@ -5,14 +5,18 @@ coustomer.count()
 query = Order.objects.filter(date__gte="2022-11-1", date__lte="2022-11-30" , user__city="Shiraz", user__gender="Male").filter(orderdetail__product__id=1)
 
 SELECT SUM(website_order.totalprice) FROM website_order INNER JOIN website_customer INNER JOIN website_orderdetail ON website_order.id=website_orderdetail.o_id AND website_order.user_id=website_customer.id WHERE website_customer.city="Shiraz" AND website_customer.gender="Male" AND website_order.date BETWEEN "2022-11-1" AND "2022-11-30" AND website_orderdetail.product_id= 1 ;
+
 SELECT SUM(website_order.totalprice) FROM website_order INNER JOIN website_customer INNER JOIN website_orderdetail ON website_order.id=website_orderdetail.o_id AND website_order.user_id=website_customer.id WHERE website_customer.city="Estanbol" AND website_customer.gender="Male" AND website_order.date = "2022-12-29" AND website_orderdetail.product_id= 51 ;
 
 SELECT website_customer.name , website_product.title , SUM(quantity) , SUM(price * quantity) / SUM(quantity) AS Mean FROM website_orderdetail INNER JOIN website_order INNER JOIN website_customer INNER JOIN website_product ON website_order.id = website_orderdetail.o_id AND website_order.user_id = website_customer.id AND website_orderdetail.product_id = website_product.id GROUP BY website_order.user_id , website_orderdetail.product_id
 
-SELECT website_customer.name , website_product.title , SUM(website_orderdetail.quantity), AVG(website_orderdetail.price) FROM website_orderdetail INNER JOIN website_order INNER JOIN website_customer INNER JOIN website_product ON website_order.id = website_orderdetail.o_id AND website_order.user_id = website_customer.id AND website_orderdetail.product_id = website_product.id GROUP BY website_orderdetail.product_id , website_order.user_id HAVING SUM(website_order.totalprice) BETWEEN 100000 AND 300000 ;
-
-db.website_orderINNER JOIN website_customer INNER JOIN website_orderdetail ON website_order.id=website_orderdetail.o_id AND website_order.user_id=website_customer.id .find({"$and": [{"website_customer.city" : "Shiraz" },{"$and": [{" website_customer.gender" : "Male" },{"$and": [{},{"$and": [{},{ " website_orderdetail.product_id" : 1 }]}]}]}] },{ "SUM(website_order.totalprice)": 1 } );
-
-db.website_orderdetail.find({},{ "website_customer.name": 1, "website_product.title": 1, "SUM": 1, "SUM(price * quantity) / SUM(quantity) AS Mean": 1 } );
-
-db..group({"key":{ "website_order.user_id , website_orderdetail.product_id ": true }, "initial": { "sumquantity": 0, "sumprice* quantity / (quantity) AS Mean ": 0 }, "reduce": function( obj , prev ){ prev.sumprice * quantity / (quantity) AS Mean = prev.sumprice * quantity / (quantity) AS Mean + obj.price * quantity / (quantity) AS Mean - 0; prev.sumprice * quantity / (quantity) AS Mean = prev.sumprice * quantity / (quantity) AS Mean + obj.price * quantity / (quantity) AS Mean - 0; },"finalize": function( prev ){}, "cond": { "$and": [{ "$where": "this.CT website_customer.name , website_product.title , SUM(quantity) , SUM(price * quantity) / SUM(quantity) AS Mean FROM website_orderdetail INNER JOIN website_order INNER JOIN website_customer INNER JOIN website_product ON website_order.id == this. website_orderdetail.o_id "},{ "$and": [{ "$where": "this. website_order.user_id == this. website_customer.id " },{ "$where": "this. website_orderdetail.product_id == this. website_product.id " }] }] }});
+SELECT SUM(website_order.totalprice) 
+FROM website_order 
+INNER JOIN website_customer 
+ON website_order.id = website_customer.id
+INNER JOIN website_orderdetail 
+ON website_order.user_id = website_orderdetail.o_id
+WHERE website_customer.city="Shiraz" AND website_customer.gender="Male" 
+AND website_order.date > date('2023-01-01T00:00:00.000+0000')
+AND website_order.date < date('2023-01-07T00:00:00.000+0000')
+AND website_orderdetail.product_id= 1 ;
