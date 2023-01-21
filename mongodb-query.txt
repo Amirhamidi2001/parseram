@@ -82,3 +82,94 @@ db.getCollection("website_order").aggregate(
         "allowDiskUse" : true
     }
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Requires official MongoShell 3.6+
+db = db.getSiblingDB("parseram");
+db.getCollection("website_orderdetail").aggregate(
+    [
+        {
+            "$project" : {
+                "_id" : NumberInt(0),
+                "website_orderdetail" : "$$ROOT"
+            }
+        }, 
+        {
+            "$lookup" : {
+                "localField" : "website_orderdetail.o_id",
+                "from" : "website_order",
+                "foreignField" : "id",
+                "as" : "website_order"
+            }
+        }, 
+        {
+            "$unwind" : {
+                "path" : "$website_order",
+                "preserveNullAndEmptyArrays" : false
+            }
+        }, 
+        {
+            "$lookup" : {
+                "localField" : "website_order.user_id",
+                "from" : "website_customer",
+                "foreignField" : "id",
+                "as" : "website_customer"
+            }
+        }, 
+        {
+            "$unwind" : {
+                "path" : "$website_customer",
+                "preserveNullAndEmptyArrays" : false
+            }
+        }, 
+        {
+            "$lookup" : {
+                "localField" : "website_orderdetail.product_id",
+                "from" : "website_product",
+                "foreignField" : "id",
+                "as" : "website_product"
+            }
+        }, 
+        {
+            "$unwind" : {
+                "path" : "$website_product",
+                "preserveNullAndEmptyArrays" : false
+            }
+        }, 
+        {
+            "$group" : {
+                "_id" : {
+                    "website_order᎐user_id" : "$website_order.user_id",
+                    "website_orderdetail᎐product_id" : "$website_orderdetail.product_id"
+                },
+                "SUM(website_orderdetail᎐quantity)" : {
+                    "$sum" : "$website_orderdetail.quantity"
+                }
+            }
+        }, 
+        {
+            "$project" : {
+                "website_order.user_id" : "$_id.website_order᎐user_id",
+                "website_orderdetail.product_id" : "$_id.website_orderdetail᎐product_id",
+                "SUM(website_orderdetail᎐quantity)" : "$SUM(website_orderdetail᎐quantity)",
+                "_id" : NumberInt(0)
+            }
+        }
+    ], 
+    {
+        "allowDiskUse" : true
+    }
+);

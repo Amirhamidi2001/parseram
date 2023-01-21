@@ -19,4 +19,4 @@ ON website_order.id = website_orderdetail.o_id
 WHERE website_customer.city="Shiraz" AND website_customer.gender="Male" 
 AND website_order.date > date('2023-01-01T00:00:00.000+0000')
 AND website_order.date < date('2023-01-07T00:00:00.000+0000')
-AND website_orderdetail.product_id= 1 ;
+AND website_orderdetail.product_id = 1 ;
