@@ -2,14 +2,18 @@ from django.db import models
 
 
 class Category(models.Model):
+    """
+    This class is for creating Category
+    """
+
     title = models.CharField(max_length=50)
     parent = models.ForeignKey(
-        'self',
+        "self",
         default=None,
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name='child'
+        related_name="child",
     )
 
     def __str__(self):
@@ -17,6 +21,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """
+    This class is for creating Product
+    """
+
     title = models.CharField(max_length=255)
     image = models.ImageField(null=True)
     content = models.CharField(max_length=255)
@@ -26,17 +34,18 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+
 CITY_CHOICES = (
-    ('Tehran', 'Tehran'),
-    ('Shiraz', 'Shiraz'),
-    ('Tabriz', 'Tabriz'),
-    ('Mashhad', 'Mashhad'),
-    ('Esfehan', 'Esfehan'),
+    ("Tehran", "Tehran"),
+    ("Shiraz", "Shiraz"),
+    ("Tabriz", "Tabriz"),
+    ("Mashhad", "Mashhad"),
+    ("Esfehan", "Esfehan"),
 )
 
 GENDER_CHOICES = (
-    ('Male', 'Male'),
-    ('Female', 'Female'),
+    ("Male", "Male"),
+    ("Female", "Female"),
 )
 
 
@@ -44,8 +53,9 @@ class Customer(models.Model):
     """
     This class is for storing customer information
     """
+
     name = models.CharField(max_length=255)
-    family = models.CharField(max_length=255, null=True)
+    family = models.CharField(max_length=255)
     age = models.IntegerField()
     city = models.CharField(choices=CITY_CHOICES, max_length=10)
     address = models.TextField(null=True)
@@ -59,6 +69,7 @@ class Order(models.Model):
     """
     This class is for finalizing the order
     """
+
     user = models.ForeignKey("Customer", on_delete=models.CASCADE)
     date = models.DateField(null=True)
     totalprice = models.IntegerField(null=True)
@@ -71,6 +82,7 @@ class OrderDetail(models.Model):
     """
     This class is for ordering
     """
+
     o = models.ForeignKey("Order", on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)

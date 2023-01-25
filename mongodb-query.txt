@@ -98,7 +98,7 @@ db.getCollection("website_order").aggregate(
 
 
 // Requires official MongoShell 3.6+
-db = db.getSiblingDB("parseram");
+db = db.getSiblingDB("mydb");
 db.getCollection("website_orderdetail").aggregate(
     [
         {
@@ -157,14 +157,22 @@ db.getCollection("website_orderdetail").aggregate(
                 },
                 "SUM(website_orderdetail᎐quantity)" : {
                     "$sum" : "$website_orderdetail.quantity"
+                },
+                "SUM(website_orderdetail᎐price)" : {
+                    "$sum" : "$website_orderdetail.price"
                 }
             }
         }, 
         {
             "$project" : {
-                "website_order.user_id" : "$_id.website_order᎐user_id",
-                "website_orderdetail.product_id" : "$_id.website_orderdetail᎐product_id",
-                "SUM(website_orderdetail᎐quantity)" : "$SUM(website_orderdetail᎐quantity)",
+                "user_id" : "$_id.website_order᎐user_id",
+                "product_id" : "$_id.website_orderdetail᎐product_id",
+                "SUM(quantity)" : "$SUM(website_orderdetail᎐quantity)",
+                "MEAN(price)" : {
+                    "$divide" : [
+                        "$SUM(website_orderdetail᎐price)", "$SUM(website_orderdetail᎐quantity)"
+                    ]
+                },
                 "_id" : NumberInt(0)
             }
         }

@@ -4,21 +4,21 @@ from faker import Faker
 from ...models import *
 
 CITY_CHOICES = (
-    ('Tehran'),
-    ('Shiraz'),
-    ('Tabriz'),
-    ('Mashhad'),
-    ('Esfehan'),
+    ("Tehran"),
+    ("Shiraz"),
+    ("Tabriz"),
+    ("Mashhad"),
+    ("Esfehan"),
 )
 
 GENDER_CHOICES = (
-    ('Male'),
-    ('Female'),
+    ("Male"),
+    ("Female"),
 )
 
 
 class Command(BaseCommand):
-    help = 'inserting dummy data'
+    help = "inserting dummy data"
 
     def __init__(self, *args, **kwargs) -> None:
         super(Command, self).__init__(*args, **kwargs)
@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 age=self.fake.random_int(14, 100),
                 city=self.fake.random_element(CITY_CHOICES),
                 address=self.fake.address(),
-                gender=self.fake.random_element(GENDER_CHOICES)
+                gender=self.fake.random_element(GENDER_CHOICES),
             )
 
             for _ in range(500):
@@ -53,12 +53,12 @@ class Command(BaseCommand):
 
                 for _ in range(self.fake.random_int(1, 3)):
                     orderdetail = OrderDetail.objects.create(
-                        o = order,
+                        o=order,
                         product=self.fake.random_element(Product.objects.all()),
                         quantity=self.fake.random_int(1, 3),
                         price=self.fake.pyint(),
                     )
                     totalprice += orderdetail.quantity * orderdetail.price
-                
+
                 order.totalprice = totalprice
                 order.save()
