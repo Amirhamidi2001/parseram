@@ -87,7 +87,7 @@ WSGI_APPLICATION = "parseram.wsgi.application"
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'mydb',
 #         'USER': 'root',
-#         'PASSWORD': 'Arsalanh_2001',
+#         'PASSWORD': '**********',
 #         'HOST':'localhost',
 #         'PORT':'3306',
 #     }
