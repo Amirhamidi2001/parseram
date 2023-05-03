@@ -1,183 +1,133 @@
 // Requires official MongoShell 3.6+
 db = db.getSiblingDB("parseram");
-db.getCollection("website_order").aggregate(
-    [
-        {
-            "$project" : {
-                "_id" : NumberInt(0),
-                "website_order" : "$$ROOT"
-            }
-        }, 
-        {
-            "$lookup" : {
-                "localField" : "website_order.user_id",
-                "from" : "website_customer",
-                "foreignField" : "id",
-                "as" : "website_customer"
-            }
-        }, 
-        {
-            "$unwind" : {
-                "path" : "$website_customer",
-                "preserveNullAndEmptyArrays" : false
-            }
-        }, 
-        {
-            "$lookup" : {
-                "localField" : "website_order.id",
-                "from" : "website_orderdetail",
-                "foreignField" : "o_id",
-                "as" : "website_orderdetail"
-            }
-        }, 
-        {
-            "$unwind" : {
-                "path" : "$website_orderdetail",
-                "preserveNullAndEmptyArrays" : false
-            }
-        }, 
-        {
-            "$match" : {
-                "$and" : [
-                    {
-                        "website_customer.city" : "Shiraz"
-                    },
-                    {
-                        "website_customer.gender" : "Male"
-                    },
-                    {
-                        "website_order.date" : {
-                            "$gt" : ISODate("2023-01-01T00:00:00.000+0000")
-                        }
-                    },
-                    {
-                        "website_order.date" : {
-                            "$lt" : ISODate("2023-01-07T00:00:00.000+0000")
-                        }
-                    },
-                    {
-                        "website_orderdetail.product_id" : NumberLong(1)
-                    }
-                ]
-            }
-        }, 
-        {
-            "$group" : {
-                "_id" : {
-
-                },
-                "SUM(website_order᎐totalprice)" : {
-                    "$sum" : "$website_order.totalprice"
-                }
-            }
-        }, 
-        {
-            "$project" : {
-                "SUM(website_order᎐totalprice)" : "$SUM(website_order᎐totalprice)",
-                "_id" : NumberInt(0)
-            }
-        }
-    ], 
-    {
-        "allowDiskUse" : true
+db.website_orderdetail.aggregate([
+  {
+    $lookup: {
+      from: "website_order",
+      localField: "o_id",
+      foreignField: "id",
+      as: "order"
     }
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Requires official MongoShell 3.6+
-db = db.getSiblingDB("mydb");
-db.getCollection("website_orderdetail").aggregate(
-    [
-        {
-            "$project" : {
-                "_id" : NumberInt(0),
-                "website_orderdetail" : "$$ROOT"
-            }
-        }, 
-        {
-            "$lookup" : {
-                "localField" : "website_orderdetail.o_id",
-                "from" : "website_order",
-                "foreignField" : "id",
-                "as" : "website_order"
-            }
-        }, 
-        {
-            "$unwind" : {
-                "path" : "$website_order",
-                "preserveNullAndEmptyArrays" : false
-            }
-        }, 
-        {
-            "$lookup" : {
-                "localField" : "website_order.user_id",
-                "from" : "website_customer",
-                "foreignField" : "id",
-                "as" : "website_customer"
-            }
-        }, 
-        {
-            "$unwind" : {
-                "path" : "$website_customer",
-                "preserveNullAndEmptyArrays" : false
-            }
-        }, 
-        {
-            "$lookup" : {
-                "localField" : "website_orderdetail.product_id",
-                "from" : "website_product",
-                "foreignField" : "id",
-                "as" : "website_product"
-            }
-        }, 
-        {
-            "$unwind" : {
-                "path" : "$website_product",
-                "preserveNullAndEmptyArrays" : false
-            }
-        }, 
-        {
-            "$group" : {
-                "_id" : {
-                    "website_order᎐user_id" : "$website_order.user_id",
-                    "website_orderdetail᎐product_id" : "$website_orderdetail.product_id"
-                },
-                "SUM(website_orderdetail᎐quantity)" : {
-                    "$sum" : "$website_orderdetail.quantity"
-                },
-                "SUM(website_orderdetail᎐price)" : {
-                    "$sum" : "$website_orderdetail.price"
-                }
-            }
-        }, 
-        {
-            "$project" : {
-                "user_id" : "$_id.website_order᎐user_id",
-                "product_id" : "$_id.website_orderdetail᎐product_id",
-                "SUM(quantity)" : "$SUM(website_orderdetail᎐quantity)",
-                "MEAN(price)" : {
-                    "$divide" : [
-                        "$SUM(website_orderdetail᎐price)", "$SUM(website_orderdetail᎐quantity)"
-                    ]
-                },
-                "_id" : NumberInt(0)
-            }
-        }
-    ], 
-    {
-        "allowDiskUse" : true
+  },
+  {
+    $unwind: "$order"
+  },
+  {
+    $lookup: {
+      from: "website_customer",
+      localField: "order.user_id",
+      foreignField: "id",
+      as: "customer"
     }
-);
+  },
+  {
+    $unwind: "$customer"
+  },
+  {
+    $lookup: {
+      from: "website_product",
+      localField: "product_id",
+      foreignField: "id",
+      as: "product"
+    }
+  },
+  {
+    $unwind: "$product"
+  },
+  {
+    $group: {
+      _id: {
+        user_id: "$order.user_id",
+        product_id: "$product.id"
+      },
+      name: {
+        $first: "$customer.name"
+      },
+      title: {
+        $first: "$product.title"
+      },
+      quantity: {
+        $sum: "$quantity"
+      },
+      total_price: {
+        $sum: {
+          $multiply: ["$price", "$quantity"]
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      title: 1,
+      quantity: 1,
+      Mean: {
+        $divide: ["$total_price", "$quantity"]
+      }
+    }
+  }
+]);
+
+
+
+
+
+db = db.getSiblingDB("parseram");
+db.website_order.aggregate([
+  {
+    $match: {
+      date: {
+        $gte: ISODate('2022-11-01T00:00:00.000Z'),
+        $lte: ISODate('2022-11-30T23:59:59.999Z')
+      }
+    }
+  },
+  {
+    $lookup: {
+      from: "website_customer",
+      localField: "user_id",
+      foreignField: "id",
+      as: "customer"
+    }
+  },
+  {
+    $unwind: "$customer"
+  },
+  {
+    $match: {
+      "customer.city": "Shiraz",
+      "customer.gender": "Male"
+    }
+  },
+  {
+    $lookup: {
+      from: "website_orderdetail",
+      localField: "id",
+      foreignField: "o_id",
+      as: "orderdetail"
+    }
+  },
+  {
+    $unwind: "$orderdetail"
+  },
+  {
+    $match: {
+      "orderdetail.product_id": 1
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      totalprice: {
+        $sum: "$totalprice"
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      totalprice: 1
+    }
+  }
+]);
